@@ -23,6 +23,7 @@ module ActiveJob
           queue_url = aws_sqs_client.create_queue(queue_name: job.queue_name.to_s).queue_url
           message_body = JSON.dump(job.serialize)
           delay = (timestamp - Time.current.to_f).to_i + 1
+          delay = 0 if delay < 0
           if delay > 15.minutes
             msg =<<-MSG
              Jobs cannot be scheduled more than 15 minutes into the future.
